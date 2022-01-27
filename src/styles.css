@@ -1,0 +1,54 @@
+/* Diablo 2 Resurrected mouse pointer links
+	Pointing hand adjusted.
+		https://imgur.com/4kPPqsx.png
+	Pointing hand.
+		https://imgur.com/EASgIvp.png
+	Open hand.
+		https://imgur.com/6HAdvyf.png
+	ex: 
+		cursor: url("url") 0 0, auto;
+*/
+body {
+  overflow: hidden;
+  background: #ffffff;
+  background-repeat: no-repeat;
+  /*place-content: center;*/
+}
+#background {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: -1;
+}
+/*
+#canvas2D 
+{
+  margin: auto;
+  display: block;
+	background: "black";
+	box-shadow: 0px 0px 5px 2px #000000;
+	-webkit-box-shadow: 0px 0px 15px 1px #000000;
+}
+*/
+/*
+#canvas2D:hover
+{
+  box-shadow: 0px 0px 5px 1px #03071e;
+  outline: 3px ridge #03071e;
+  outline-offset: 0px;
+}
+#canvas2D:click {
+}
+*/
+#cout {
+  position: fixed;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  /*margin: auto;*/
+  /*display: block;*/
+  box-shadow: 0px 0px 1px 1px #000000ff;
+}
