@@ -1,7 +1,7 @@
 //*******************//
 //* Author: SkyHops *//
 //*******************//
-import "./styles.css";
+import styles from "./styles.css";
 var canvas = document.createElement("canvas");
 canvas.style.margin = "auto";
 canvas.style.display = "block";
