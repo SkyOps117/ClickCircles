@@ -1,108 +1,125 @@
-//*******************//
-//* Author: SkyHops *//
-//*******************//
-import styles from "./styles.css";
+/* * * * * * * * * * * * * * *  * * * * * * * * * * */
+/*                - Click Circles -                 */
+/*  A canvas based game using pure javascript only. */
+/*  The goal is to click animated circles around.   */
+/*  
+/*               ~ Author: SkyHops ~                */
+/* * * * * * * * * * * * * * *  * * * * * * * * * * */
+
+import Stats from "./mod/Stats.js";
+import { imgLinks } from "./obj/links.js";
+var fpsMeter = new Stats();
+fpsMeter.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+
+//var head = document.getElementsByTagName('head')[0];
+var linkCSS = document.createElement('link');
+linkCSS.rel = 'stylesheet'; 
+linkCSS.type = 'text/css';
+linkCSS.href = './src/styles.css'; 
+document.getElementsByTagName('head')[0].appendChild(linkCSS); 
+
+var body = document.getElementsByTagName("body")[0];
+body.style.background = "#111111";
+body.style.overflow = "hidden";
+
 var canvas = document.createElement("canvas");
-canvas.style.margin = "auto";
-canvas.style.display = "block";
+canvas.style.position = "absolute";
+//canvas.style.margin = "auto";
+//canvas.style.padding = "0px";
 canvas.style.boxShadow = "0px 0px 15px 2px #000000ff";
-canvas.style.cursor = "url('https://imgur.com/4kPPqsx.png') 0 0, auto";
-canvas.addEventListener("mouseup", mouseUp);
-document.getElementsByTagName("body")[0].appendChild(canvas);
-//let canvas = document.getElementById("canvas2D");
+canvas.style.cursor = "url('./assets/D2R-point.png') 5 10, auto";
+//canvas.style.backgroundRepeat = "noRepeat";
+canvas.style.backgroundImage = "url(" + imgLinks[0] + ")";
+canvas.style.backgroundPosition = "center";
+canvas.style.backgroundSize = "100% 100%";
+
 var ctx = canvas.getContext("2d");
-var coutput = document.getElementById("cout");
-coutput.style.boxShadow = "0px 0px 1px 1px #000000ff";
 
-/*
-var imageLinks = {
-  space: "https://images.unsplash.com/photo-1468276311594-df7cb65d8df6",
-  galaxy: "https://images.unsplash.com/photo-1605704366546-e3632af0c5c6",
-  forest: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-  sky: "https://images.unsplash.com/photo-1464802686167-b939a6910659",
-  winter: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606",
-  nasa: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06"
-};
-*/
-// Background image url
-var images = {
-  current: 0,
-  length: 6,
-  links: [
-    "https://images.unsplash.com/photo-1468276311594-df7cb65d8df6",
-    "https://images.unsplash.com/photo-1605704366546-e3632af0c5c6",
-    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-    "https://images.unsplash.com/photo-1464802686167-b939a6910659",
-    "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06",
-    "https://images.unsplash.com/photo-1454496522488-7a8e488e8606"
-  ],
-  switch: function () {
-    var tempIndex = this.current;
-    if (this.current < this.length - 1) this.current++;
-    else this.current = 0;
-    return this.links[tempIndex];
-  }
-};
+body.appendChild(canvas);
+body.appendChild(fpsMeter.dom);
 
-var background = document.getElementById("background");
-background.src = images.links[0];
+var coutput = document.createElement("div");
+coutput.style.position = "absolute";
+coutput.style.margin = "auto";
+coutput.style.padding = "0";
+coutput.style.backgroundColor = "#111111";
+coutput.style.color = "#ffffcb";
+coutput.style.boxShadow = "0px 0px 1px 1px #ffffcbff";
+coutput.style.display = "block";
+coutput.style.zIndex = 99999;
+body.appendChild(coutput);
 
 //Event listeners
+canvas.addEventListener("mousemove", mouseMove);
+canvas.addEventListener("mousedown", mouseDown);
+canvas.addEventListener("mouseup", mouseUp);
+
 window.addEventListener("onload", onLoad);
 window.addEventListener("resize", resize);
 window.addEventListener("unload", unLoad);
-document.addEventListener("mousemove", mouseMove);
-document.addEventListener("mousedown", mouseDown);
-//document.addEventListener("mouseup", mouseUp);
 var intervalID = setInterval(update, 1000 / 29.9);
 resize();
+
+/* * * * * * * * */
+/* ~ Functions ~ */
+/* * * * * * * * */
 
 //When loading
 function onLoad() {}
 
 //Resize canvas
 function resize() {
+  /*
+  var ratio = Math.min(window.innerWidth/canvas.width, window.innerHeight/canvas.height);
+  canvas.style.transform = "scale("+ ratio +")";
+  */
   canvas.height = window.innerWidth * (9 / 16);
   canvas.width = window.innerHeight * (16 / 9);
-  canvas.y = window.innerHeight/2;
+  
+  //canvas.style.transform = "scale(1)";
 }
 
 //When closing
 function unLoad() {
-  document.removeEventListener("mousemove", mouseMove);
-  document.removeEventListener("mousedown", mouseDown);
-  document.removeEventListener("mouseup", mouseUp);
+  canvas.removeEventListener("mousemove", mouseMove);
+  canvas.removeEventListener("mousedown", mouseDown);
+  canvas.removeEventListener("mouseup", mouseUp);
   clearInterval(intervalID);
 }
 
 //Update loop
 function update() {
-  coutput.innerHTML =
-    "(" +
-    window.innerWidth +
-    "x; " +
-    window.innerHeight +
-    "y) Zoom: " +
-    window.devicePixelRatio;
-  draw();
+  var time = performance.now() / 1000;
+  fpsMeter.begin();
+  coutput.innerHTML = "(" + canvas.width + "x; " + canvas.height + "y) Zoom: " + window.devicePixelRatio;
+  
+  draw();	
+  fpsMeter.end();
 }
 
 //Mouse is moving
-function mouseMove() {}
+function mouseMove(event) {
+  console.log(event.pageX + ";" + event.pageY);
+  console.log();
+}
 
 //Mouse click pressed
-function mouseDown() {}
+function mouseDown() 
+{
+  canvas.style.cursor = "url('./assets/D2R-point.png') 10 10, auto";
+}
 
 //Mouse click released
 function mouseUp() {
-  background.src = images.switch();
+  canvas.style.cursor = "url('./assets/D2R-open.png') 10 10, auto";
+  canvas.style.backgroundImage = "#111111";
+  canvas.style.backgroundImage = "url(" + imgLinks[1] + ")";
 }
 
 //Draw loop
 function draw() {}
 
-/*
-function drawText(text, point) {
+function drawText(text, x, y) {
   var gradient = ctx.createLinearGradient(
     canvas.width / 2,
     0,
@@ -115,8 +132,21 @@ function drawText(text, point) {
   ctx.font = "16px Consolas";
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
-  ctx.strokeText(text, point.x, point.y);
+  ctx.strokeText(text, x, y);
   ctx.fillStyle = gradient;
-  ctx.fillText(text, point.x, point.y);
+  ctx.fillText(text, x, y);
 }
-*/
+
+function genGradient(x1, y1, x2, y2)
+{
+  var gradient = ctx.createLinearGradient(
+    canvas.width / 2,
+    0,
+    canvas.width / 2,
+    canvas.height
+  );
+  gradient.addColorStop("0", "cyan");
+  gradient.addColorStop("0.5", "#ffffcb");
+  gradient.addColorStop("1.0", "red");
+  return gradient;
+}
