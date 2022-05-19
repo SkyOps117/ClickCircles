@@ -27,11 +27,12 @@ canvas.style.position = "absolute";
 //canvas.style.margin = "auto";
 //canvas.style.padding = "0px";
 canvas.style.boxShadow = "0px 0px 15px 2px #000000ff";
-canvas.style.cursor = "url('./assets/D2R-point.png') 5 10, auto";
+canvas.style.cursor = "url('./assets/D2R-open.png') 5 10, auto";
 //canvas.style.backgroundRepeat = "noRepeat";
+canvas.style.backgroundImage = "#111111";
 canvas.style.backgroundImage = "url(" + imgLinks[0] + ")";
 canvas.style.backgroundPosition = "center";
-canvas.style.backgroundSize = "100% 100%";
+//canvas.style.backgroundSize = "100% 100%";
 
 var ctx = canvas.getContext("2d");
 
@@ -42,9 +43,10 @@ var coutput = document.createElement("div");
 coutput.style.position = "absolute";
 coutput.style.margin = "auto";
 coutput.style.padding = "0";
-coutput.style.backgroundColor = "#111111";
+coutput.style.backgroundColor = "#11111188";
 coutput.style.color = "#ffffcb";
-coutput.style.boxShadow = "0px 0px 1px 1px #ffffcbff";
+coutput.style.boxShadow = "0px 0px 2px 2px #11111188";
+coutput.style.pointerEvents = "none";
 coutput.style.display = "block";
 coutput.style.zIndex = 99999;
 body.appendChild(coutput);
@@ -91,16 +93,21 @@ function unLoad() {
 function update() {
   var time = performance.now() / 1000;
   fpsMeter.begin();
-  coutput.innerHTML = "(" + canvas.width + "x; " + canvas.height + "y) Zoom: " + window.devicePixelRatio;
+  //window.devicePixelRatio; //For zoom
   
   draw();	
   fpsMeter.end();
 }
-
+var mouseX = 0;
+var mouseY = 0;
 //Mouse is moving
 function mouseMove(event) {
-  console.log(event.pageX + ";" + event.pageY);
-  console.log();
+  mouseX = event.pageX;
+  mouseY = event.pageY;
+  //coutput.innerText = "(" + event.pageX + ";" + event.pageY + ")";
+  //coutput.style.left = event.pageX + "px"
+  //coutput.style.top = event.pageY + "px"
+  //console.log(event.pageX + ";" + event.pageY);
 }
 
 //Mouse click pressed
@@ -112,12 +119,14 @@ function mouseDown()
 //Mouse click released
 function mouseUp() {
   canvas.style.cursor = "url('./assets/D2R-open.png') 10 10, auto";
-  canvas.style.backgroundImage = "#111111";
   canvas.style.backgroundImage = "url(" + imgLinks[1] + ")";
 }
 
 //Draw loop
-function draw() {}
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawText("(" + mouseX + ";" + mouseY + ")" , mouseX, mouseY);
+}
 
 function drawText(text, x, y) {
   var gradient = ctx.createLinearGradient(
